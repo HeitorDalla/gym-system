@@ -1,0 +1,119 @@
+nome,idade,sexo,email,telefone,plano_id,instrutor_id,treino_id
+Sr. Antônio Freitas,19,M,guilhermecavalcanti@pereira.com,+55 31 3389 0838,3,1,1
+Clarice Porto,33,F,da-cruzmaria@uol.com.br,(081) 4235 1161,1,2,2
+João Felipe Ferreira,65,M,hteixeira@cardoso.org,0900-593-1034,1,2,3
+Enzo Castro,55,M,ana-vitoria52@yahoo.com.br,11 3419 2832,2,3,4
+João Miguel Fogaça,19,M,sofia03@lopes.org,+55 (084) 3953 7672,1,1,2
+Daniel Farias,32,M,xnunes@hotmail.com,+55 84 8710 1226,3,1,3
+Bernardo Nogueira,53,M,qsouza@bol.com.br,+55 (021) 1845 1462,1,3,1
+Agatha Ferreira,32,F,jesusluiza@da.com,0300-570-1543,2,2,4
+Eduarda Cardoso,18,F,wcampos@costela.com,+55 71 8963-8346,1,1,3
+Dra. Isadora Pires,39,F,fariaslevi@gmail.com,(081) 0983 9301,2,2,2
+Sr. Enzo Campos,31,M,danilo83@rodrigues.net,71 2997-3763,2,3,1
+Caio Pinto,23,M,doliveira@ig.com.br,+55 (071) 1065 1333,2,3,4
+Levi Cunha,40,M,matheusrezende@hotmail.com,+55 11 7810 8013,2,2,4
+Júlia Rodrigues,20,F,alanacaldeira@hotmail.com,41 0647 4687,3,1,2
+Caroline Gonçalves,52,F,vianacaua@caldeira.com,0800 788 2081,1,1,1
+Ana Clara Campos,23,F,kcosta@barbosa.br,+55 71 3534-6247,3,1,3
+Sophia Cardoso,58,F,ecastro@santos.br,+55 (084) 3542 7849,3,1,4
+Dra. Alana Vieira,54,F,cunhaluiz-miguel@gmail.com,+55 51 8244 9353,1,2,1
+Dr. Luiz Fernando Rodrigues,20,M,carvalholuana@uol.com.br,+55 84 0052-4278,3,2,2
+Dr. Matheus Alves,36,M,da-costafernanda@moura.com,(021) 2045-0533,1,3,3
+Sr. João Gabriel Oliveira,24,M,igorda-luz@araujo.com,(071) 6342 1607,2,3,1
+Catarina Ramos,47,F,yasmin33@gmail.com,+55 (071) 6541-4586,3,3,4
+Dra. Helena Araújo,28,F,joao-gabriel94@cavalcanti.br,(084) 5698 1693,2,3,2
+Amanda Pinto,31,F,thomaspinto@melo.br,+55 71 4846 5648,3,2,1
+Caroline Peixoto,62,F,laurajesus@uol.com.br,81 0443-6995,3,1,2
+Leonardo Pires,56,M,qda-cunha@gomes.br,+55 31 3433 2003,3,2,3
+Paulo Cardoso,52,M,tda-mota@ig.com.br,51 7632 0163,3,3,4
+Samuel Silveira,28,M,fariasfelipe@uol.com.br,+55 84 7889 5798,2,1,2
+Maria Clara Porto,35,F,qporto@freitas.net,+55 84 7143-4558,3,1,3
+Daniel da Costa,61,M,tda-costa@campos.br,71 7603-6690,2,2,1
+João Miguel Rocha,32,M,noah66@rodrigues.br,(084) 0656-2729,1,3,4
+Alice Novaes,43,F,pereiragabriel@da.com,+55 71 6537-5564,2,1,3
+Fernando Cardoso,31,M,vianacalebe@yahoo.com.br,+55 21 1003-3092,3,2,2
+Ana Ribeiro,31,F,biancafernandes@da.com,+55 (031) 4190-4966,3,2,1
+Srta. Ana Julia Farias,43,F,maria-luiza91@monteiro.br,31 1850 6716,3,3,4
+Maysa Ramos,27,F,uda-luz@teixeira.br,(061) 6945-3147,2,1,4
+Vitor Gabriel Rezende,33,M,benicio75@hotmail.com,(084) 3545-4948,3,1,2
+Manuela da Mota,65,F,milenaoliveira@duarte.br,(084) 7014-3634,3,3,1
+Dra. Isadora Ribeiro,55,F,vvieira@yahoo.com.br,(051) 4443-1351,2,2,3
+Dra. Sophie da Mata,32,F,oliviarocha@souza.org,+55 41 3435 2408,1,1,4
+Emilly Barbosa,23,F,maria27@alves.org,(071) 7752-0471,1,2,1
+João Rodrigues,27,M,da-costaheitor@cardoso.net,+55 71 8699 9386,3,3,2
+Leonardo Jesus,61,M,isabel90@bol.com.br,+55 41 3341 2328,2,3,3
+Davi Lucca Almeida,42,M,sribeiro@gmail.com,+55 31 4471-3493,2,2,1
+Ana Sophia Viana,51,F,luiz-otavioda-conceicao@caldeira.org,0300-947-1746,2,1,4
+Luiz Fernando Viana,61,M,mcardoso@gmail.com,(021) 5940-1399,3,1,2
+Vitor Hugo Fogaça,61,M,brendasilveira@freitas.com,0800 671 7565,3,1,1
+Natália Cavalcanti,59,F,alicia74@vieira.com,(051) 1545-1680,2,1,2
+Dr. Juan Barros,36,M,lais77@da.com,(011) 7710 9324,2,2,3
+André Vieira,47,M,das-nevesenzo@uol.com.br,+55 71 2748 4677,1,2,4
+Laís Vieira,50,F,mda-mota@campos.br,21 4044-9972,1,3,2
+Luiz Otávio Rocha,58,M,gabrielly86@uol.com.br,(061) 3396 3605,2,3,3
+Dr. Thales Nascimento,27,M,catarinaazevedo@hotmail.com,21 9517-1870,2,3,1
+Sr. Juan da Costa,52,M,vferreira@cardoso.br,61 6578-0913,3,3,4
+Dr. Enzo Carvalho,56,M,castroana-luiza@hotmail.com,(031) 0050 4556,2,2,3
+Elisa Souza,19,F,joaquimda-luz@gmail.com,0800-693-7923,1,1,2
+Maysa Fernandes,37,F,maria-cecilia07@yahoo.com.br,71 2175-9464,1,2,1
+Heitor da Paz,33,M,pcavalcanti@uol.com.br,0500 594 4064,3,3,4
+Miguel Barros,23,M,sophie39@yahoo.com.br,+55 21 3942-1047,3,1,4
+Maria Luiza Moreira,22,F,goncalvespietro@da.net,+55 81 8588 4247,3,1,2
+Vinicius Mendes,26,M,jcardoso@novaes.br,+55 (021) 4817 5496,3,2,1
+Sra. Ana Lívia Dias,53,F,martinslarissa@hotmail.com,+55 (084) 7461 2004,1,3,3
+Ana Sophia Castro,51,F,yagoramos@viana.br,0900 261 7964,3,1,4
+Olivia Moura,31,F,ppires@castro.br,71 5064-3171,3,2,1
+Sr. Pedro Aragão,63,M,luigi29@campos.net,+55 31 5290-4228,2,2,2
+Yasmin da Luz,60,F,costelaantonio@duarte.br,+55 (031) 2402 6811,3,3,3
+Lavínia Moreira,46,F,osantos@silveira.br,+55 (041) 0766 1771,3,1,1
+Giovanna da Conceição,25,F,marcos-viniciusvieira@nascimento.org,(051) 8961-1836,1,1,4
+Enzo Oliveira,22,M,anunes@ig.com.br,+55 41 5654 5271,2,3,2
+Bruno Carvalho,55,M,mourafrancisco@bol.com.br,+55 (081) 9885 1656,3,2,1
+Sr. Gustavo Henrique Lima,55,M,santoskevin@hotmail.com,(081) 3158-5149,1,1,2
+Kevin Araújo,22,M,da-matamarcelo@ig.com.br,(041) 5502 2961,3,2,3
+Vicente Araújo,32,M,vitor-gabrielpeixoto@mendes.com,31 4599 1022,1,3,4
+Benjamin Cardoso,39,M,fpereira@bol.com.br,(031) 6438-1561,1,3,2
+Renan Rodrigues,35,M,das-nevesagatha@bol.com.br,+55 (081) 0343 2445,3,2,3
+Agatha Sales,31,F,francisconascimento@bol.com.br,+55 31 8851-6060,3,1,1
+Breno Lopes,64,M,speixoto@gmail.com,71 0529 7516,3,1,4
+Elisa Pinto,33,F,novaespedro-henrique@ig.com.br,(081) 3521 8188,2,1,3
+Stephany Monteiro,30,F,lucascavalcanti@hotmail.com,+55 61 3292-1277,1,1,2
+Vitor Hugo Porto,60,M,heitor71@uol.com.br,(031) 4490-5814,2,2,1
+Lavínia Azevedo,45,F,murilo11@rezende.com,(041) 9359-7820,2,2,4
+Ana Lívia Mendes,64,F,brunofarias@pires.com,21 5466 5905,1,3,4
+Isaac Castro,21,M,luiz-fernando92@yahoo.com.br,+55 21 9254 6291,2,3,2
+Maria Eduarda Nascimento,24,F,maria-clarasouza@gmail.com,(011) 8505-4235,1,3,1
+Diogo das Neves,30,M,davi-lucasgoncalves@santos.com,(081) 9296 2229,3,3,3
+Rebeca Pires,26,F,rmoreira@pires.br,+55 31 8347-3597,2,2,4
+Vitor Gomes,35,M,mda-cruz@bol.com.br,+55 84 4075 8181,2,1,1
+Bruno da Cruz,22,M,jsilva@uol.com.br,+55 31 3750 6068,2,2,2
+Erick Nogueira,21,M,levi05@melo.com,+55 (051) 4727 7901,3,3,3
+Fernando da Rosa,23,M,xcorreia@duarte.org,+55 71 0369 7117,1,1,1
+Luiz Otávio Aragão,44,M,nathanpereira@moraes.br,+55 (061) 1851-8888,2,1,4
+Alexia Nogueira,31,F,nogueiravinicius@yahoo.com.br,+55 (031) 5153 1952,2,2,2
+João Gabriel Viana,28,M,stellarezende@ig.com.br,(081) 2217-0430,2,3,1
+Augusto Lopes,42,M,eviana@yahoo.com.br,+55 (051) 3450 5415,2,1,2
+Juliana Pires,36,F,joao-lucas77@yahoo.com.br,41 4161-6928,2,2,3
+Giovanna Cavalcanti,27,F,maria-alice44@pereira.com,(031) 5705-9640,1,2,4
+Natália Nunes,31,F,benicioda-conceicao@bol.com.br,(031) 0213-5569,1,3,2
+Otávio da Costa,65,M,vinicius71@bol.com.br,+55 84 8565 4310,2,1,3
+Sr. Luiz Felipe Silveira,21,M,ferreirasophie@yahoo.com.br,(041) 3947-3121,3,1,1
+Camila Pires,50,F,maria-cecilia51@jesus.com,+55 (051) 5831-3237,3,3,4
+João Guilherme Vieira,21,M,ivieira@bol.com.br,+55 31 1467 8669,3,2,3
+Cauê Lopes,29,M,rrezende@costela.com,+55 81 6801 8242,1,1,2
+Igor das Neves,61,M,davi-lucca43@ig.com.br,81 4249-8182,1,2,1
+Maria Luiza da Costa,25,F,heloisa00@barbosa.org,+55 (084) 9690-7844,3,3,4
+Felipe Nunes,55,M,scardoso@gmail.com,+55 (031) 7677-3592,3,3,4
+Theo Lopes,57,M,wcostela@yahoo.com.br,31 8153-7147,1,2,2
+Bianca Castro,60,F,vitor96@da.br,+55 (071) 2787-7470,3,1,1
+Julia Santos,34,F,leandromoraes@gmail.com,+55 (071) 4797 4801,1,1,3
+Beatriz Ferreira,33,F,cmoreira@uol.com.br,+55 (071) 9835 8416,2,1,4
+Lavínia Vieira,26,F,costeladiogo@uol.com.br,31 5852 3986,3,1,1
+Amanda Barbosa,47,F,maysamelo@silveira.br,+55 (021) 9825-9526,2,2,2
+Vicente Jesus,18,M,ejesus@gmail.com,31 5169 4097,2,2,3
+Pietro Dias,22,M,hda-cunha@da.net,+55 (051) 9130 7562,3,3,1
+Ryan da Rocha,50,M,tcaldeira@hotmail.com,41 3857-8652,2,3,4
+Luiz Otávio Mendes,40,M,larissa73@hotmail.com,+55 84 8434-4375,1,3,2
+João Felipe Freitas,41,M,vianavitor-hugo@uol.com.br,(084) 2404 1574,2,3,1
+Dr. Enrico da Paz,46,M,guilherme19@ig.com.br,0900 330 8330,3,2,2
+Júlia Melo,57,F,cunhaandre@bol.com.br,+55 (031) 6773-4540,3,1,3
