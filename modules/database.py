@@ -2,15 +2,16 @@ import sqlite3
 import pandas as pd
 
 def get_connection():
-    """Conecta (ou cria) o banco de dados SQLite"""
+    # Conecta (ou cria) o banco de dados SQLite
     
     conn = sqlite3.connect("database/gym-system.db", check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('PRAGMA foreign_keys = ON;')
+
     return conn, cursor
 
 def create_tables(conn, cursor):
-    """Criação de todas as tabelas necessárias"""
+    # Criação de todas as tabelas necessárias
     
     # Criação da tabela clientes
     cursor.execute('''
@@ -108,7 +109,7 @@ def create_tables(conn, cursor):
     conn.commit()
 
 def populate_tables(conn, cursor):
-    """Popula as tabelas com dados dos CSVs se estiverem vazias"""
+    # Popula as tabelas com dados dos CSVs se estiverem vazias
     
     cursor.execute("SELECT COUNT(*) FROM exercicios")
     if cursor.fetchone()[0] == 0:
@@ -146,9 +147,10 @@ def populate_tables(conn, cursor):
         df_exercicios.to_sql('treino_exercicios', conn, if_exists='append', index=False)
 
 def initialize_database():
-    """Inicializa o banco de dados completo"""
+    # Inicializa o banco de dados completo
 
     conn, cursor = get_connection()
     create_tables(conn, cursor)
     populate_tables(conn, cursor)
+    
     return conn, cursor

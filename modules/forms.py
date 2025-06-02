@@ -42,7 +42,6 @@ def form_cadastro_pagamento(conn, cursor):
     st.write('Pagamento')
 
     menu_cliente = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
-    menu_planos = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
 
     with st.form("form_pagamento", clear_on_submit=True):
         clientes_opcao = ["-- Selecione o Cliente --"] + menu_cliente["nome"].tolist()
@@ -127,4 +126,4 @@ def form_cadastro_exercicio_treino(conn, cursor):
             ''', (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
             
             conn.commit()
-            st.success(f"Exericio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
+            st.success(f"Exercicio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
