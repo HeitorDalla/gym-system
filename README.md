@@ -1,6 +1,6 @@
 <h1>Sistema de Academia</h1>
 
-<p>Esse projeto foi desenvolvido em <code>Python</code> usando <code>Pandas</code>, <code>SQLite</code> e <code>Streamlit</code> fim praticar os ensimentos aprendidos ao decorrer da capacitação em Analytics.</p>
+<p>Esse projeto foi desenvolvido em <code>Python</code> usando <code>Pandas</code>, <code>SQLite</code> e <code>Streamlit</code> fim praticar os ensinamentos aprendidos ao decorrer da capacitação em Analytics.</p>
 
 <hr>
 
