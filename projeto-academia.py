@@ -142,5 +142,16 @@ df_clientesPlanos = pd.read_sql_query('''
     from clientes_academia as c
     left join planos p on c.plano_id = p.id
 ''', conn)
-
 st.dataframe(df_clientesPlanos)
+
+# Filtrar e mostrar treinos e seus exercícios
+df_treinosExercicios = pd.read_sql_query('''
+    select
+        t.id as `Treino`,
+        group_concat(e.nome, ', ') as `Exercicio`
+    from treinos t
+    inner join treino_exercicios te on te.treino_id = t.id
+    inner join exercicios e on te.exercicio_id = e.id
+    group by t.id
+''', conn)
+st.dataframe(df_treinosExercicios)
