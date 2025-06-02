@@ -140,6 +140,7 @@ if cursor.fetchone()[0] == 0:
 # 	3.5. Formulário para cadastro de clientes, pagamentos, treinos e exercícios nos treinos;
 # 	3.6. EXTRA: Usar a função de autenticação do streamlit para criar um login e senha.
 
+st.title("🎓 Sistema para Academia")
 
 # 1 - Lista os clientes e seus planos
 st.subheader("Listagem dos clientes e seus planos")
@@ -238,9 +239,8 @@ st.write(f'O instrutor **{instrutor_selecionado}** possui **{total_alunos}** alu
 
 
 # Formulários para cadastro de clientes, pagamentos, treinos e exercícios nos treinos
-st.title("🎓 Sistema para Academia")
 
-st.subheader("Fazer Novo Cadastro", divider='grey')
+st.subheader("Cadastros", divider='grey')
 opcao_menu = st.selectbox('Escolha uma opção para cadastrar', ['Cliente', 'Pagamento', 'Treino', 'Exercicios por Treino'])
 
 if opcao_menu == 'Cliente':
@@ -276,6 +276,7 @@ elif opcao_menu == 'Pagamento':
     with st.form("form_pagamento", clear_on_submit=True):
         clientes_opcao = ["-- Selecione o Cliente --"] + menu_cliente["nome"].tolist()
         nome_cliente = st.selectbox("Selecione o Cliente para Pagamento", clientes_opcao)
+
         pagar = st.form_submit_button("Pago")
 
         if pagar:
@@ -285,8 +286,10 @@ elif opcao_menu == 'Pagamento':
                 data_pagamento = datetime.now().strftime("%Y-%m-%d")
                 df_valor_plano = pd.read_sql_query("SELECT preco_mensal FROM planos WHERE id = ?", conn, params=(id_plano_cliente,))
                 preco_plano = df_valor_plano['preco_mensal'].iloc[0]
+
                 cursor.execute("INSERT INTO pagamento_clientes (cliente_id, plano_id, valor_pago, data_pagamento) VALUES (?, ?, ?, ?)",
                     (id_cliente, id_plano_cliente, preco_plano, data_pagamento))
+                
                 conn.commit()
                 st.success(f"Pagamento feito com sucesso")
             else:
@@ -298,7 +301,7 @@ elif opcao_menu == 'Treino':
     df_clientes = pd.read_sql_query("select * from clientes_academia order by nome", conn)
     df_instrutor = pd.read_sql_query("select * from instrutores order by nome", conn)
     df_planos = pd.read_sql_query("select * from planos order by nome", conn)
-    
+
     with st.form('Formulário para cadastro de treinos', clear_on_submit=True):
         nome_cliente = st.selectbox("Nome cliente", df_clientes['nome'])
         nome_instrutor = st.selectbox("Nome instrutor", df_instrutor['nome'])
@@ -310,7 +313,6 @@ elif opcao_menu == 'Treino':
 
         if button:
             if nome_cliente and nome_instrutor and data_inicio and data_fim and plano_escolhido:
-                # Recuperar os ids do clientes e instrutores
                 id_nome = int(df_clientes[df_clientes['nome'] == nome_cliente]['id'].values[0])
                 id_instrutor = int(df_instrutor[df_instrutor['nome'] == nome_instrutor]['id'].values[0])
                 id_plano = int(df_planos[df_planos['nome'] == plano_escolhido]['id'].values[0])
@@ -323,3 +325,30 @@ elif opcao_menu == 'Treino':
 
                 conn.commit()
                 st.success("Treino cadastrado com sucesso!")
+
+elif opcao_menu == 'Exercicios por Treino':
+    st.write('Exercicios por Treino')
+
+    with st.form("form_novo_exercicio_treino", clear_on_submit=True):
+        menu_treino = pd.read_sql_query("SELECT * FROM treinos", conn)
+        numero_treino = st.selectbox("Treino", menu_treino["id"])
+        menu_exercicio = pd.read_sql_query("SELECT * FROM exercicios", conn)
+        nome_exercicio = st.selectbox("Exercicio", menu_exercicio["nome"])
+        qtd_serie = st.text_input("Quantidade de Séries")
+        qtd_repeticoes = st.text_input("Quantidade de Repetições")
+        cadastrar_exercicio = st.form_submit_button("Cadastrar")
+
+        if cadastrar_exercicio:
+            treino_id = int(menu_treino[menu_treino["id"] == numero_treino]["id"].values[0])
+            id_exercicio = int(menu_exercicio[menu_exercicio["nome"] == nome_exercicio]["id"].values[0])
+
+            cursor.execute('''INSERT INTO treino_exercicios
+                            (treino_id, exercicio_id, series, repeticoes) 
+                            VALUES(?, ?, ?, ?)''', 
+                            (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
+            
+            conn.commit()
+            st.success(f"Exericio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
+
+st.write('\n')
+st.write('\n')
