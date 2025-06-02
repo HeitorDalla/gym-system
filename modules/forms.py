@@ -19,15 +19,23 @@ def form_cadastro_cliente(conn, cursor):
         cadastrar = st.form_submit_button("Cadastrar")
 
     if cadastrar:
-            plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
-
-            cursor.execute('''
-                INSERT INTO clientes_academia 
-                (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
-            ''', (nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id))
+        if  nome_cliente and idade_cliente and sexo_cliente and email_cliente and telefone_cliente:
+            cursor.execute("SELECT COUNT(*) FROM clientes_academia WHERE nome = ?", (nome_cliente,)) #Verifica se o cliente ja existe
             
-            conn.commit()
-            st.success(f"Cadastro feito com sucesso")
+            if cursor.fetchone()[0] == 0:
+                plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
+
+                cursor.execute('''
+                    INSERT INTO clientes_academia 
+                    (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
+                ''', (nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id))
+                
+                conn.commit()
+                st.success(f"Cadastro feito com sucesso")
+            else:
+                st.error(f'Cliente ja existe!')
+        else:
+            st.error(f'Favor preencher todos os campos!')
 
 def form_cadastro_pagamento(conn, cursor):
     """Formulário para cadastro de pagamento"""
