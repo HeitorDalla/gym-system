@@ -246,23 +246,25 @@ opcao_menu = st.selectbox('Escolha uma opção para cadastrar', ['Cliente', 'Pag
 if opcao_menu == 'Cliente':
     st.write('Cliente')
 
+    menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
+
     with st.form("form_cliente", clear_on_submit=True):
         nome_cliente = st.text_input("Nome Cliente")
         idade_cliente = st.text_input("Idade Cliente")
         sexo_cliente = st.text_input("Sexo Cliente(M/F)")
         email_cliente = st.text_input("E-mail Cliente")
         telefone_cliente = st.text_input("Telefone Cliente")
-        menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
         plano = st.selectbox("Planos", menu_planos["nome"])
+
         cadastrar = st.form_submit_button("Cadastrar")
 
     if cadastrar:
             plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
+
             cursor.execute('''
-                           INSERT INTO clientes_academia 
-                           (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
-                        ''',(nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id)
-                        )
+                INSERT INTO clientes_academia 
+                (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
+            ''', (nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id))
             
             conn.commit()
             st.success(f"Cadastro feito com sucesso")
@@ -287,8 +289,11 @@ elif opcao_menu == 'Pagamento':
                 df_valor_plano = pd.read_sql_query("SELECT preco_mensal FROM planos WHERE id = ?", conn, params=(id_plano_cliente,))
                 preco_plano = df_valor_plano['preco_mensal'].iloc[0]
 
-                cursor.execute("INSERT INTO pagamento_clientes (cliente_id, plano_id, valor_pago, data_pagamento) VALUES (?, ?, ?, ?)",
-                    (id_cliente, id_plano_cliente, preco_plano, data_pagamento))
+                cursor.execute('''
+                    INSERT INTO pagamento_clientes
+                    (cliente_id, plano_id, valor_pago, data_pagamento)
+                    VALUES (?, ?, ?, ?)
+                ''', (id_cliente, id_plano_cliente, preco_plano, data_pagamento))
                 
                 conn.commit()
                 st.success(f"Pagamento feito com sucesso")
@@ -329,10 +334,11 @@ elif opcao_menu == 'Treino':
 elif opcao_menu == 'Exercicios por Treino':
     st.write('Exercicios por Treino')
 
+    menu_treino = pd.read_sql_query("SELECT * FROM treinos", conn)
+    menu_exercicio = pd.read_sql_query("SELECT * FROM exercicios", conn)
+
     with st.form("form_novo_exercicio_treino", clear_on_submit=True):
-        menu_treino = pd.read_sql_query("SELECT * FROM treinos", conn)
         numero_treino = st.selectbox("Treino", menu_treino["id"])
-        menu_exercicio = pd.read_sql_query("SELECT * FROM exercicios", conn)
         nome_exercicio = st.selectbox("Exercicio", menu_exercicio["nome"])
         qtd_serie = st.text_input("Quantidade de Séries")
         qtd_repeticoes = st.text_input("Quantidade de Repetições")
@@ -342,10 +348,11 @@ elif opcao_menu == 'Exercicios por Treino':
             treino_id = int(menu_treino[menu_treino["id"] == numero_treino]["id"].values[0])
             id_exercicio = int(menu_exercicio[menu_exercicio["nome"] == nome_exercicio]["id"].values[0])
 
-            cursor.execute('''INSERT INTO treino_exercicios
-                            (treino_id, exercicio_id, series, repeticoes) 
-                            VALUES(?, ?, ?, ?)''', 
-                            (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
+            cursor.execute('''
+                INSERT INTO treino_exercicios
+                (treino_id, exercicio_id, series, repeticoes) 
+                VALUES(?, ?, ?, ?)
+            ''', (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
             
             conn.commit()
             st.success(f"Exericio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
