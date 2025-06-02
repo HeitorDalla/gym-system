@@ -6,7 +6,7 @@ import sqlite3
 import csv
 
 # 📦 Conecta (ou cria) o banco de dados SQLite
-conn = sqlite3.connect("gym-system.db", check_same_thread=False)
+conn = sqlite3.connect("database/gym-system.db", check_same_thread=False)
 cursor = conn.cursor()
 
 # Criação da tabela clientes (DDL)
@@ -98,37 +98,37 @@ cursor.execute('PRAGMA foreign_keys = ON;')
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('exercicios.csv')
+    df_exercicios = pd.read_csv('csv/exercicios.csv')
     df_exercicios.to_sql('exercicios', conn, if_exists='append', index=False)
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('instrutores.csv')
+    df_exercicios = pd.read_csv('csv/instrutores.csv')
     df_exercicios.to_sql('instrutores', conn, if_exists='append', index=False)
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('planos.csv')
+    df_exercicios = pd.read_csv('csv/planos.csv')
     df_exercicios.to_sql('planos', conn, if_exists='append', index=False)
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('clientes_academia.csv')
+    df_exercicios = pd.read_csv('csv/clientes_academia.csv')
     df_exercicios.to_sql('clientes_academia', conn, if_exists='append', index=False)
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('pagamento_clientes.csv')
+    df_exercicios = pd.read_csv('csv/pagamento_clientes.csv')
     df_exercicios.to_sql('pagamento_clientes', conn, if_exists='append', index=False)
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('treinos.csv')
+    df_exercicios = pd.read_csv('csv/treinos.csv')
     df_exercicios.to_sql('treinos', conn, if_exists='append', index=False)
 
 cursor.execute("SELECT COUNT(*) FROM exercicios")
 if cursor.fetchone()[0] == 0:
-    df_exercicios = pd.read_csv('treino_exercicios.csv')
+    df_exercicios = pd.read_csv('csv/treino_exercicios.csv')
     df_exercicios.to_sql('treino_exercicios', conn, if_exists='append', index=False)
 
 # Lista os clientes e seus planos
