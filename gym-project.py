@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 import sqlite3
-import csv
+import hashlib
 
 # 📦 Conecta (ou cria) o banco de dados SQLite
 conn = sqlite3.connect("database/gym-system.db", check_same_thread=False)
@@ -140,222 +140,296 @@ if cursor.fetchone()[0] == 0:
 # 	3.5. Formulário para cadastro de clientes, pagamentos, treinos e exercícios nos treinos;
 # 	3.6. EXTRA: Usar a função de autenticação do streamlit para criar um login e senha.
 
-st.title("🎓 Sistema para Academia")
-
-# 1 - Lista os clientes e seus planos
-st.subheader("Listagem dos clientes e seus planos")
-st.write('\n')
-
-df_clientesPlanos = pd.read_sql_query('''
-    select
-        c.nome as `Nome do cliente`,
-        p.nome as `Plano`
-    from clientes_academia as c
-    left join planos p on c.plano_id = p.id
-''', conn)
-st.dataframe(df_clientesPlanos)
-
-
-# 2 - Filtrar e mostrar treinos e seus exercícios
-df_treinosExercicios = pd.read_sql_query('''
-    select
-        t.id as `Treino`,
-        group_concat(e.nome, ', ') as `Exercicio`
-    from treinos t
-    inner join treino_exercicios te on te.treino_id = t.id
-    inner join exercicios e on te.exercicio_id = e.id
-    group by t.id
-''', conn)
-st.dataframe(df_treinosExercicios)
-
-
-# 3 - Mostrar total de pagamentos e último pagamento por cliente
-st.subheader('Pagamentos por Clientes', divider=True)
-
-df_nomes_clientes = pd.read_sql('''
-	SELECT id, nome FROM clientes_academia
-''', conn)
-
-nomes_clientes_dict = {
-    f"{row['nome']} (ID {row['id']})": row['id']
-    for _, row in df_nomes_clientes.iterrows()
-}
-
-cliente_selecionado = st.selectbox('Selecione um cliente:', options=list(nomes_clientes_dict.keys()))
-
-# Recupera o ID correspondente
-cliente_selecionado_id = nomes_clientes_dict[cliente_selecionado]
-
-# Conta quantos pagamentos esse cliente já fez
-cursor.execute('SELECT COUNT(*) FROM pagamento_clientes WHERE cliente_id = ?', (cliente_selecionado_id,))
-total_pagamentos = cursor.fetchone()[0]
-
-# Busca o último pagamento (valor e data), ordenando pela data
+# """Cria a tabela de usuários se não existir"""
 cursor.execute('''
-    SELECT valor_pago, data_pagamento
-    FROM pagamento_clientes
-    WHERE cliente_id = ?
-    ORDER BY data_pagamento DESC
-    LIMIT 1
-''', (cliente_selecionado_id,))
-ultimo_pagamento = cursor.fetchone()
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        senha TEXT NOT NULL
+    )
+''')
+conn.commit()
 
-# Exibe os resultados na tela
-st.write(f'O cliente **{cliente_selecionado}** fez **{total_pagamentos}** pagamentos.')
+def hash_senha(senha):
+    return hashlib.sha256(senha.encode()).hexdigest()
 
-if ultimo_pagamento:
-    valor, data = ultimo_pagamento
-    st.write(f'Seu último pagamento foi de **R$ {valor:.2f}**, em **{data}**.')
+
+# """Popula a tabela com 5 usuários, se estiver vazia"""
+cursor.execute("SELECT COUNT(*) FROM usuarios")
+if cursor.fetchone()[0] == 0:
+    usuarios = [
+        ("Alice Santos", "alice@email.com", "senha123"),
+        ("Bruno Silva", "bruno@email.com", "segredo"),
+        ("Carlos Lima", "carlos@email.com", "academia"),
+        ("Diana Costa", "diana@email.com", "fitness"),
+        ("Eduarda Reis", "eduarda@email.com", "malhacao")
+    ]
+    for nome, email, senha in usuarios:
+        senha_hash = hash_senha(senha)
+        cursor.execute("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
+                        (nome, email, senha_hash))
+    conn.commit()
+
+def autenticar_usuario(email, senha):
+    # """Autentica o usuário pelo email e senha (com hash)"""
+    senha_hash = hash_senha(senha)
+    cursor.execute("SELECT * FROM usuarios WHERE email = ? AND senha = ?", (email, senha_hash))
+    return cursor.fetchone()
+
+
+# =========================
+# 2. Interface do Streamlit
+# =========================
+
+# Controle de sessão
+if "logado" not in st.session_state:
+    st.session_state.logado = False
+    st.session_state.usuario = None
+
+# Se não estiver logado, mostra tela de login
+if not st.session_state.logado:
+    st.title("Login de Usuário")
+
+    email = st.text_input("Email")
+    senha = st.text_input("Senha", type="password")
+
+    if st.button("Entrar"):
+        usuario = autenticar_usuario(email, senha)
+        if usuario:
+            st.session_state.logado = True
+            st.session_state.usuario = usuario
+            st.success(f"Bem-vindo, {usuario[1]}!")
+            st.rerun()
+        else:
+            st.error("Email ou senha incorretos. Tente novamente.")
+
+# Se estiver logado, mostra conteúdo protegido
 else:
-    st.write('Ainda não há pagamentos registrados para este cliente.')
+    st.sidebar.success(f"Logado como: {st.session_state.usuario[1]}")
+
+    st.title("🎓 Sistema para Academia")
+
+    # 1 - Lista os clientes e seus planos
+    st.subheader("Listagem dos clientes e seus planos")
+    st.write('\n')
+
+    df_clientesPlanos = pd.read_sql_query('''
+        select
+            c.nome as `Nome do cliente`,
+            p.nome as `Plano`
+        from clientes_academia as c
+        left join planos p on c.plano_id = p.id
+    ''', conn)
+    st.dataframe(df_clientesPlanos)
 
 
-# 4 - Quantidade de clientes por instrutor
-st.subheader('Quantidade de Clientes por Instrutor', divider=True)
-
-df_nomes_instrutor = pd.read_sql_query('''
-    SELECT id, nome FROM instrutores
-''', conn)
-
-nomes_instrutor_dict = {
-    f"{row['nome']} (ID {row['id']})": row['id']
-    for _, row in df_nomes_instrutor.iterrows()
-}
-
-instrutor_selecionado = st.selectbox('Selecione um instrutor:', options=list(nomes_instrutor_dict.keys()))
-
-instrutor_selecionado_id = nomes_instrutor_dict[instrutor_selecionado]
-
-cursor.execute(
-    '''
-    SELECT COUNT(DISTINCT cliente_id)
-    FROM treinos
-    WHERE instrutor_id = ?
-''', (instrutor_selecionado_id,)
-)
-total_alunos = cursor.fetchone()[0]
-
-st.write(f'O instrutor **{instrutor_selecionado}** possui **{total_alunos}** alunos.')
+    # 2 - Filtrar e mostrar treinos e seus exercícios
+    df_treinosExercicios = pd.read_sql_query('''
+        select
+            t.id as `Treino`,
+            group_concat(e.nome, ', ') as `Exercicio`
+        from treinos t
+        inner join treino_exercicios te on te.treino_id = t.id
+        inner join exercicios e on te.exercicio_id = e.id
+        group by t.id
+    ''', conn)
+    st.dataframe(df_treinosExercicios)
 
 
-# Formulários para cadastro de clientes, pagamentos, treinos e exercícios nos treinos
+    # 3 - Mostrar total de pagamentos e último pagamento por cliente
+    st.subheader('Pagamentos por Clientes', divider=True)
 
-st.subheader("Cadastros", divider='grey')
-opcao_menu = st.selectbox('Escolha uma opção para cadastrar', ['Cliente', 'Pagamento', 'Treino', 'Exercicios por Treino'])
+    df_nomes_clientes = pd.read_sql('''
+        SELECT id, nome FROM clientes_academia
+    ''', conn)
 
-if opcao_menu == 'Cliente':
-    st.write('Cliente')
+    nomes_clientes_dict = {
+        f"{row['nome']} (ID {row['id']})": row['id']
+        for _, row in df_nomes_clientes.iterrows()
+    }
 
-    menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
+    cliente_selecionado = st.selectbox('Selecione um cliente:', options=list(nomes_clientes_dict.keys()))
 
-    with st.form("form_cliente", clear_on_submit=True):
-        nome_cliente = st.text_input("Nome Cliente")
-        idade_cliente = st.text_input("Idade Cliente")
-        sexo_cliente = st.text_input("Sexo Cliente(M/F)")
-        email_cliente = st.text_input("E-mail Cliente")
-        telefone_cliente = st.text_input("Telefone Cliente")
-        plano = st.selectbox("Planos", menu_planos["nome"])
+    # Recupera o ID correspondente
+    cliente_selecionado_id = nomes_clientes_dict[cliente_selecionado]
 
-        cadastrar = st.form_submit_button("Cadastrar")
+    # Conta quantos pagamentos esse cliente já fez
+    cursor.execute('SELECT COUNT(*) FROM pagamento_clientes WHERE cliente_id = ?', (cliente_selecionado_id,))
+    total_pagamentos = cursor.fetchone()[0]
 
-    if cadastrar:
-            plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
+    # Busca o último pagamento (valor e data), ordenando pela data
+    cursor.execute('''
+        SELECT valor_pago, data_pagamento
+        FROM pagamento_clientes
+        WHERE cliente_id = ?
+        ORDER BY data_pagamento DESC
+        LIMIT 1
+    ''', (cliente_selecionado_id,))
+    ultimo_pagamento = cursor.fetchone()
 
-            cursor.execute('''
-                INSERT INTO clientes_academia 
-                (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
-            ''', (nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id))
-            
-            conn.commit()
-            st.success(f"Cadastro feito com sucesso")
+    # Exibe os resultados na tela
+    st.write(f'O cliente **{cliente_selecionado}** fez **{total_pagamentos}** pagamentos.')
 
-elif opcao_menu == 'Pagamento':
-    st.write('Pagamento')
+    if ultimo_pagamento:
+        valor, data = ultimo_pagamento
+        st.write(f'Seu último pagamento foi de **R$ {valor:.2f}**, em **{data}**.')
+    else:
+        st.write('Ainda não há pagamentos registrados para este cliente.')
 
-    menu_cliente = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
-    menu_planos = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
 
-    with st.form("form_pagamento", clear_on_submit=True):
-        clientes_opcao = ["-- Selecione o Cliente --"] + menu_cliente["nome"].tolist()
-        nome_cliente = st.selectbox("Selecione o Cliente para Pagamento", clientes_opcao)
+    # 4 - Quantidade de clientes por instrutor
+    st.subheader('Quantidade de Clientes por Instrutor', divider=True)
 
-        pagar = st.form_submit_button("Pago")
+    df_nomes_instrutor = pd.read_sql_query('''
+        SELECT id, nome FROM instrutores
+    ''', conn)
 
-        if pagar:
-            if (nome_cliente != '-- Selecione o Cliente --'):
-                id_cliente = int(menu_cliente[menu_cliente["nome"] == nome_cliente]["id"].values[0])
-                id_plano_cliente = int(menu_cliente[menu_cliente["nome"] == nome_cliente]["plano_id"].values[0])
-                data_pagamento = datetime.now().strftime("%Y-%m-%d")
-                df_valor_plano = pd.read_sql_query("SELECT preco_mensal FROM planos WHERE id = ?", conn, params=(id_plano_cliente,))
-                preco_plano = df_valor_plano['preco_mensal'].iloc[0]
+    nomes_instrutor_dict = {
+        f"{row['nome']} (ID {row['id']})": row['id']
+        for _, row in df_nomes_instrutor.iterrows()
+    }
+
+    instrutor_selecionado = st.selectbox('Selecione um instrutor:', options=list(nomes_instrutor_dict.keys()))
+
+    instrutor_selecionado_id = nomes_instrutor_dict[instrutor_selecionado]
+
+    cursor.execute(
+        '''
+        SELECT COUNT(DISTINCT cliente_id)
+        FROM treinos
+        WHERE instrutor_id = ?
+    ''', (instrutor_selecionado_id,)
+    )
+    total_alunos = cursor.fetchone()[0]
+
+    st.write(f'O instrutor **{instrutor_selecionado}** possui **{total_alunos}** alunos.')
+
+
+    # Formulários para cadastro de clientes, pagamentos, treinos e exercícios nos treinos
+
+    st.subheader("Cadastros", divider='grey')
+    opcao_menu = st.selectbox('Escolha uma opção para cadastrar', ['Cliente', 'Pagamento', 'Treino', 'Exercicios por Treino'])
+
+    if opcao_menu == 'Cliente':
+        st.write('Cliente')
+
+        menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
+
+        with st.form("form_cliente", clear_on_submit=True):
+            nome_cliente = st.text_input("Nome Cliente")
+            idade_cliente = st.text_input("Idade Cliente")
+            sexo_cliente = st.text_input("Sexo Cliente(M/F)")
+            email_cliente = st.text_input("E-mail Cliente")
+            telefone_cliente = st.text_input("Telefone Cliente")
+            plano = st.selectbox("Planos", menu_planos["nome"])
+
+            cadastrar = st.form_submit_button("Cadastrar")
+
+        if cadastrar:
+                plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
 
                 cursor.execute('''
-                    INSERT INTO pagamento_clientes
-                    (cliente_id, plano_id, valor_pago, data_pagamento)
-                    VALUES (?, ?, ?, ?)
-                ''', (id_cliente, id_plano_cliente, preco_plano, data_pagamento))
+                    INSERT INTO clientes_academia 
+                    (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
+                ''', (nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id))
                 
                 conn.commit()
-                st.success(f"Pagamento feito com sucesso")
-            else:
-                st.error(f"Favor selecionar um cliente.")
+                st.success(f"Cadastro feito com sucesso")
 
-elif opcao_menu == 'Treino':
-    st.write('Treino')
+    elif opcao_menu == 'Pagamento':
+        st.write('Pagamento')
 
-    df_clientes = pd.read_sql_query("select * from clientes_academia order by nome", conn)
-    df_instrutor = pd.read_sql_query("select * from instrutores order by nome", conn)
-    df_planos = pd.read_sql_query("select * from planos order by nome", conn)
+        menu_cliente = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
+        menu_planos = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
 
-    with st.form('Formulário para cadastro de treinos', clear_on_submit=True):
-        nome_cliente = st.selectbox("Nome cliente", df_clientes['nome'])
-        nome_instrutor = st.selectbox("Nome instrutor", df_instrutor['nome'])
-        data_inicio = st.text_input("Data de início [DD/MM/AAAA]")
-        data_fim = st.text_input("Data do fim [DD/MM/AAAA]")
-        plano_escolhido = st.selectbox("Planos", df_planos['nome'])
+        with st.form("form_pagamento", clear_on_submit=True):
+            clientes_opcao = ["-- Selecione o Cliente --"] + menu_cliente["nome"].tolist()
+            nome_cliente = st.selectbox("Selecione o Cliente para Pagamento", clientes_opcao)
 
-        button = st.form_submit_button("Cadastrar")
+            pagar = st.form_submit_button("Pago")
 
-        if button:
-            if nome_cliente and nome_instrutor and data_inicio and data_fim and plano_escolhido:
-                id_nome = int(df_clientes[df_clientes['nome'] == nome_cliente]['id'].values[0])
-                id_instrutor = int(df_instrutor[df_instrutor['nome'] == nome_instrutor]['id'].values[0])
-                id_plano = int(df_planos[df_planos['nome'] == plano_escolhido]['id'].values[0])
+            if pagar:
+                if (nome_cliente != '-- Selecione o Cliente --'):
+                    id_cliente = int(menu_cliente[menu_cliente["nome"] == nome_cliente]["id"].values[0])
+                    id_plano_cliente = int(menu_cliente[menu_cliente["nome"] == nome_cliente]["plano_id"].values[0])
+                    data_pagamento = datetime.now().strftime("%Y-%m-%d")
+                    df_valor_plano = pd.read_sql_query("SELECT preco_mensal FROM planos WHERE id = ?", conn, params=(id_plano_cliente,))
+                    preco_plano = df_valor_plano['preco_mensal'].iloc[0]
+
+                    cursor.execute('''
+                        INSERT INTO pagamento_clientes
+                        (cliente_id, plano_id, valor_pago, data_pagamento)
+                        VALUES (?, ?, ?, ?)
+                    ''', (id_cliente, id_plano_cliente, preco_plano, data_pagamento))
+                    
+                    conn.commit()
+                    st.success(f"Pagamento feito com sucesso")
+                else:
+                    st.error(f"Favor selecionar um cliente.")
+
+    elif opcao_menu == 'Treino':
+        st.write('Treino')
+
+        df_clientes = pd.read_sql_query("select * from clientes_academia order by nome", conn)
+        df_instrutor = pd.read_sql_query("select * from instrutores order by nome", conn)
+        df_planos = pd.read_sql_query("select * from planos order by nome", conn)
+
+        with st.form('Formulário para cadastro de treinos', clear_on_submit=True):
+            nome_cliente = st.selectbox("Nome cliente", df_clientes['nome'])
+            nome_instrutor = st.selectbox("Nome instrutor", df_instrutor['nome'])
+            data_inicio = st.text_input("Data de início [DD/MM/AAAA]")
+            data_fim = st.text_input("Data do fim [DD/MM/AAAA]")
+            plano_escolhido = st.selectbox("Planos", df_planos['nome'])
+
+            button = st.form_submit_button("Cadastrar")
+
+            if button:
+                if nome_cliente and nome_instrutor and data_inicio and data_fim and plano_escolhido:
+                    id_nome = int(df_clientes[df_clientes['nome'] == nome_cliente]['id'].values[0])
+                    id_instrutor = int(df_instrutor[df_instrutor['nome'] == nome_instrutor]['id'].values[0])
+                    id_plano = int(df_planos[df_planos['nome'] == plano_escolhido]['id'].values[0])
+
+                    cursor.execute('''
+                        insert into treinos
+                        (cliente_id, instrutor_id, data_inicio, data_fim, plano_id)
+                        values (?, ?, ?, ?, ?)
+                    ''', ((id_nome, id_instrutor, data_inicio, data_fim, id_plano)))
+
+                    conn.commit()
+                    st.success("Treino cadastrado com sucesso!")
+
+    elif opcao_menu == 'Exercicios por Treino':
+        st.write('Exercicios por Treino')
+
+        menu_treino = pd.read_sql_query("SELECT * FROM treinos", conn)
+        menu_exercicio = pd.read_sql_query("SELECT * FROM exercicios", conn)
+
+        with st.form("form_novo_exercicio_treino", clear_on_submit=True):
+            numero_treino = st.selectbox("Treino", menu_treino["id"])
+            nome_exercicio = st.selectbox("Exercicio", menu_exercicio["nome"])
+            qtd_serie = st.text_input("Quantidade de Séries")
+            qtd_repeticoes = st.text_input("Quantidade de Repetições")
+
+            cadastrar_exercicio = st.form_submit_button("Cadastrar")
+
+            if cadastrar_exercicio:
+                treino_id = int(menu_treino[menu_treino["id"] == numero_treino]["id"].values[0])
+                id_exercicio = int(menu_exercicio[menu_exercicio["nome"] == nome_exercicio]["id"].values[0])
 
                 cursor.execute('''
-                    insert into treinos
-                    (cliente_id, instrutor_id, data_inicio, data_fim, plano_id)
-                    values (?, ?, ?, ?, ?)
-                ''', ((id_nome, id_instrutor, data_inicio, data_fim, id_plano)))
-
+                    INSERT INTO treino_exercicios
+                    (treino_id, exercicio_id, series, repeticoes) 
+                    VALUES(?, ?, ?, ?)
+                ''', (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
+                
                 conn.commit()
-                st.success("Treino cadastrado com sucesso!")
+                st.success(f"Exericio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
 
-elif opcao_menu == 'Exercicios por Treino':
-    st.write('Exercicios por Treino')
+    st.write('\n')
+    st.write('\n')
 
-    menu_treino = pd.read_sql_query("SELECT * FROM treinos", conn)
-    menu_exercicio = pd.read_sql_query("SELECT * FROM exercicios", conn)
-
-    with st.form("form_novo_exercicio_treino", clear_on_submit=True):
-        numero_treino = st.selectbox("Treino", menu_treino["id"])
-        nome_exercicio = st.selectbox("Exercicio", menu_exercicio["nome"])
-        qtd_serie = st.text_input("Quantidade de Séries")
-        qtd_repeticoes = st.text_input("Quantidade de Repetições")
-        cadastrar_exercicio = st.form_submit_button("Cadastrar")
-
-        if cadastrar_exercicio:
-            treino_id = int(menu_treino[menu_treino["id"] == numero_treino]["id"].values[0])
-            id_exercicio = int(menu_exercicio[menu_exercicio["nome"] == nome_exercicio]["id"].values[0])
-
-            cursor.execute('''
-                INSERT INTO treino_exercicios
-                (treino_id, exercicio_id, series, repeticoes) 
-                VALUES(?, ?, ?, ?)
-            ''', (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
-            
-            conn.commit()
-            st.success(f"Exericio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
-
-st.write('\n')
-st.write('\n')
+    if st.sidebar.button("Sair"):
+        st.session_state.logado = False
+        st.session_state.usuario = None
+        st.rerun()
