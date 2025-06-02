@@ -155,3 +155,37 @@ df_treinosExercicios = pd.read_sql_query('''
     group by t.id
 ''', conn)
 st.dataframe(df_treinosExercicios)
+
+# Formulário de cadastro de novos treinos
+st.subheader("Formulário de cadastro de novos treinos")
+st.write("\n")
+
+# Carregando as tabelas necessárias
+df_clientes = pd.read_sql_query("select * from clientes_academia order by nome", conn)
+df_instrutor = pd.read_sql_query("select * from instrutores order by nome", conn)
+df_planos = pd.read_sql_query("select * from planos order by nome", conn)
+
+with st.form('Formulário para cadastro de treinos', clear_on_submit=True):
+    nome_cliente = st.selectbox("Nome cliente", df_clientes['nome'])
+    nome_instrutor = st.selectbox("Nome instrutor", df_instrutor['nome'])
+    data_inicio = st.text_input("Data de início [DD/MM/AAAA]")
+    data_fim = st.text_input("Data do fim [DD/MM/AAAA]")
+    plano_escolhido = st.selectbox("Planos", df_planos['nome'])
+
+    button = st.form_submit_button("Cadastrar")
+
+    if button:
+        if nome_cliente and nome_instrutor and data_inicio and data_fim and plano_escolhido:
+            # Recuperar os ids do clientes e instrutores
+            id_nome = int(df_clientes[df_clientes['nome'] == nome_cliente]['id'].values[0])
+            id_instrutor = int(df_instrutor[df_instrutor['nome'] == nome_instrutor]['id'].values[0])
+            id_plano = int(df_planos[df_planos['nome'] == plano_escolhido]['id'].values[0])
+
+            cursor.execute('''
+                insert into treinos
+                (cliente_id, instrutor_id, data_inicio, data_fim, plano_id)
+                values (?, ?, ?, ?, ?)
+            ''', ((id_nome, id_instrutor, data_inicio, data_fim, id_plano)))
+
+            conn.commit()
+            st.success("Treino cadastrado com sucesso!")
