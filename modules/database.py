@@ -3,15 +3,16 @@ import pandas as pd
 
 def get_connection():
     """Conecta (ou cria) o banco de dados SQLite"""
+    
     conn = sqlite3.connect("database/gym-system.db", check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('PRAGMA foreign_keys = ON;')
     return conn, cursor
 
 def create_tables(conn, cursor):
-    """Cria todas as tabelas necessárias"""
+    """Criação de todas as tabelas necessárias"""
     
-    # Criação da tabela clientes (DDL)
+    # Criação da tabela clientes
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS clientes_academia (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,7 +26,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela instrutores (DDL)
+    # Criação da tabela instrutores
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS instrutores (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +35,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela planos (DDL)
+    # Criação da tabela planos
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS planos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,7 +45,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela exercicios (DDL)
+    # Criação da tabela exercicios
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS exercicios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +54,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela treinos (DDL)
+    # Criação da tabela treinos
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS treinos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,7 +69,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela treino_exercicio (DDL)
+    # Criação da tabela treino_exercicio
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS treino_exercicios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +82,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela pagamentos (DDL)
+    # Criação da tabela pagamentos
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS pagamento_clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -94,7 +95,7 @@ def create_tables(conn, cursor):
     )
     ''')
 
-    # Criação da tabela usuarios (DDL)
+    # Criação da tabela usuarios
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -146,6 +147,7 @@ def populate_tables(conn, cursor):
 
 def initialize_database():
     """Inicializa o banco de dados completo"""
+
     conn, cursor = get_connection()
     create_tables(conn, cursor)
     populate_tables(conn, cursor)

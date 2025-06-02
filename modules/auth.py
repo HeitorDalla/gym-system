@@ -2,10 +2,12 @@ import hashlib
 
 def hash_senha(senha):
     """Gera hash da senha"""
+
     return hashlib.sha256(senha.encode()).hexdigest()
 
 def populate_usuarios(conn, cursor):
     """Popula a tabela com 5 usuários, se estiver vazia"""
+
     cursor.execute("SELECT COUNT(*) FROM usuarios")
     if cursor.fetchone()[0] == 0:
         usuarios = [
@@ -23,6 +25,7 @@ def populate_usuarios(conn, cursor):
 
 def autenticar_usuario(cursor, email, senha):
     """Autentica o usuário pelo email e senha (com hash)"""
+    
     senha_hash = hash_senha(senha)
     cursor.execute("SELECT * FROM usuarios WHERE email = ? AND senha = ?", (email, senha_hash))
     return cursor.fetchone()

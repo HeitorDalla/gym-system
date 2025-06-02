@@ -12,9 +12,8 @@ conn, cursor = initialize_database()
 # Popula usuários se necessário
 populate_usuarios(conn, cursor)
 
-# =========================
+
 # Interface do Streamlit
-# =========================
 
 # Controle de sessão
 if "logado" not in st.session_state:
