@@ -245,6 +245,7 @@ opcao_menu = st.selectbox('Escolha uma opção para cadastrar', ['Cliente', 'Pag
 
 if opcao_menu == 'Cliente':
     st.write('Cliente')
+
     with st.form("form_cliente", clear_on_submit=True):
         nome_cliente = st.text_input("Nome Cliente")
         idade_cliente = st.text_input("Idade Cliente")
@@ -254,6 +255,7 @@ if opcao_menu == 'Cliente':
         menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
         plano = st.selectbox("Planos", menu_planos["nome"])
         cadastrar = st.form_submit_button("Cadastrar")
+
     if cadastrar:
             plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
             cursor.execute('''
@@ -265,7 +267,31 @@ if opcao_menu == 'Cliente':
             conn.commit()
             st.success(f"Cadastro feito com sucesso")
 
-            
+elif opcao_menu == 'Pagamento':
+    st.write('Pagamento')
+
+    menu_cliente = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
+    menu_planos = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
+
+    with st.form("form_pagamento", clear_on_submit=True):
+        clientes_opcao = ["-- Selecione o Cliente --"] + menu_cliente["nome"].tolist()
+        nome_cliente = st.selectbox("Selecione o Cliente para Pagamento", clientes_opcao)
+        pagar = st.form_submit_button("Pago")
+        
+        if pagar:
+            if (nome_cliente != '-- Selecione o Cliente --'):
+                id_cliente = int(menu_cliente[menu_cliente["nome"] == nome_cliente]["id"].values[0])
+                id_plano_cliente = int(menu_cliente[menu_cliente["nome"] == nome_cliente]["plano_id"].values[0])
+                data_pagamento = datetime.now().strftime("%Y-%m-%d")
+                df_valor_plano = pd.read_sql_query("SELECT preco_mensal FROM planos WHERE id = ?", conn, params=(id_plano_cliente,))
+                preco_plano = df_valor_plano['preco_mensal'].iloc[0]
+                cursor.execute("INSERT INTO pagamento_clientes (cliente_id, plano_id, valor_pago, data_pagamento) VALUES (?, ?, ?, ?)",
+                    (id_cliente, id_plano_cliente, preco_plano, data_pagamento))
+                conn.commit()
+                st.success(f"Pagamento feito com sucesso")
+            else:
+                st.error(f"Favor selecionar um cliente.")
+
 # Formulário de cadastro de novos treinos
 st.subheader("Formulário de cadastro de novos treinos")
 st.write("\n")
