@@ -140,6 +140,7 @@ if cursor.fetchone()[0] == 0:
 # 	3.5. Formulário para cadastro de clientes, pagamentos, treinos e exercícios nos treinos;
 # 	3.6. EXTRA: Usar a função de autenticação do streamlit para criar um login e senha.
 
+
 # 1 - Lista os clientes e seus planos
 st.subheader("Listagem dos clientes e seus planos")
 st.write('\n')
@@ -153,6 +154,7 @@ df_clientesPlanos = pd.read_sql_query('''
 ''', conn)
 st.dataframe(df_clientesPlanos)
 
+
 # 2 - Filtrar e mostrar treinos e seus exercícios
 df_treinosExercicios = pd.read_sql_query('''
     select
@@ -164,6 +166,7 @@ df_treinosExercicios = pd.read_sql_query('''
     group by t.id
 ''', conn)
 st.dataframe(df_treinosExercicios)
+
 
 # 3 - Mostrar total de pagamentos e último pagamento por cliente
 st.subheader('Pagamentos por Clientes', divider=True)
@@ -204,6 +207,34 @@ if ultimo_pagamento:
     st.write(f'Seu último pagamento foi de **R$ {valor:.2f}**, em **{data}**.')
 else:
     st.write('Ainda não há pagamentos registrados para este cliente.')
+
+
+# 4 - Quantidade de clientes por instrutor
+st.subheader('Quantidade de Clientes por Instrutor', divider=True)
+
+df_nomes_instrutor = pd.read_sql_query('''
+    SELECT id, nome FROM instrutores
+''', conn)
+
+nomes_instrutor_dict = {
+    f"{row['nome']} (ID {row['id']})": row['id']
+    for _, row in df_nomes_instrutor.iterrows()
+}
+
+instrutor_selecionado = st.selectbox('Selecione um instrutor:', options=list(nomes_instrutor_dict.keys()))
+
+instrutor_selecionado_id = nomes_instrutor_dict[instrutor_selecionado]
+
+cursor.execute(
+    '''
+    SELECT COUNT(DISTINCT cliente_id)
+    FROM treinos
+    WHERE instrutor_id = ?
+''', (instrutor_selecionado_id,)
+)
+total_alunos = cursor.fetchone()[0]
+
+st.write(f'O instrutor **{instrutor_selecionado}** possui **{total_alunos}** alunos.')
 
 
 # Formulário de cadastro de novos treinos
