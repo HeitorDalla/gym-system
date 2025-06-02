@@ -237,6 +237,35 @@ total_alunos = cursor.fetchone()[0]
 st.write(f'O instrutor **{instrutor_selecionado}** possui **{total_alunos}** alunos.')
 
 
+# Formulários para cadastro de clientes, pagamentos, treinos e exercícios nos treinos
+st.title("🎓 Sistema para Academia")
+
+st.subheader("Fazer Novo Cadastro", divider='grey')
+opcao_menu = st.selectbox('Escolha uma opção para cadastrar', ['Cliente', 'Pagamento', 'Treino', 'Exercicios por Treino'])
+
+if opcao_menu == 'Cliente':
+    st.write('Cliente')
+    with st.form("form_cliente", clear_on_submit=True):
+        nome_cliente = st.text_input("Nome Cliente")
+        idade_cliente = st.text_input("Idade Cliente")
+        sexo_cliente = st.text_input("Sexo Cliente(M/F)")
+        email_cliente = st.text_input("E-mail Cliente")
+        telefone_cliente = st.text_input("Telefone Cliente")
+        menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
+        plano = st.selectbox("Planos", menu_planos["nome"])
+        cadastrar = st.form_submit_button("Cadastrar")
+    if cadastrar:
+            plano_id = int(menu_planos[menu_planos["nome"] == plano]["id"].values[0])
+            cursor.execute('''
+                           INSERT INTO clientes_academia 
+                           (nome, idade, sexo, email, telefone, plano_id) VALUES (?, ?, ?, ?, ?, ?)
+                        ''',(nome_cliente, idade_cliente, sexo_cliente, email_cliente, telefone_cliente, plano_id)
+                        )
+            
+            conn.commit()
+            st.success(f"Cadastro feito com sucesso")
+
+            
 # Formulário de cadastro de novos treinos
 st.subheader("Formulário de cadastro de novos treinos")
 st.write("\n")
