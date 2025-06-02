@@ -101,37 +101,46 @@ if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/exercicios.csv')
     df_exercicios.to_sql('exercicios', conn, if_exists='append', index=False)
 
-cursor.execute("SELECT COUNT(*) FROM exercicios")
+cursor.execute("SELECT COUNT(*) FROM instrutores")
 if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/instrutores.csv')
     df_exercicios.to_sql('instrutores', conn, if_exists='append', index=False)
 
-cursor.execute("SELECT COUNT(*) FROM exercicios")
+cursor.execute("SELECT COUNT(*) FROM planos")
 if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/planos.csv')
     df_exercicios.to_sql('planos', conn, if_exists='append', index=False)
 
-cursor.execute("SELECT COUNT(*) FROM exercicios")
+cursor.execute("SELECT COUNT(*) FROM clientes_academia")
 if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/clientes_academia.csv')
     df_exercicios.to_sql('clientes_academia', conn, if_exists='append', index=False)
 
-cursor.execute("SELECT COUNT(*) FROM exercicios")
+cursor.execute("SELECT COUNT(*) FROM pagamento_clientes")
 if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/pagamento_clientes.csv')
     df_exercicios.to_sql('pagamento_clientes', conn, if_exists='append', index=False)
 
-cursor.execute("SELECT COUNT(*) FROM exercicios")
+cursor.execute("SELECT COUNT(*) FROM treinos")
 if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/treinos.csv')
     df_exercicios.to_sql('treinos', conn, if_exists='append', index=False)
 
-cursor.execute("SELECT COUNT(*) FROM exercicios")
+cursor.execute("SELECT COUNT(*) FROM treino_exercicios")
 if cursor.fetchone()[0] == 0:
     df_exercicios = pd.read_csv('csv/treino_exercicios.csv')
     df_exercicios.to_sql('treino_exercicios', conn, if_exists='append', index=False)
 
-# Lista os clientes e seus planos
+
+# 3. Criar uma aplicação Streamlit para:
+# 	3.1. Listar clientes e seus planos;
+# 	3.2. Filtrar e mostrar treinos e seus exercícios;
+# 	3.3. Mostrar total de pagamentos e último pagamento por cliente;
+# 	3.4. Mostrar quantos clientes cada instrutor atende;
+# 	3.5. Formulário para cadastro de clientes, pagamentos, treinos e exercícios nos treinos;
+# 	3.6. EXTRA: Usar a função de autenticação do streamlit para criar um login e senha.
+
+# 1 - Lista os clientes e seus planos
 st.subheader("Listagem dos clientes e seus planos")
 st.write('\n')
 
@@ -144,7 +153,7 @@ df_clientesPlanos = pd.read_sql_query('''
 ''', conn)
 st.dataframe(df_clientesPlanos)
 
-# Filtrar e mostrar treinos e seus exercícios
+# 2 - Filtrar e mostrar treinos e seus exercícios
 df_treinosExercicios = pd.read_sql_query('''
     select
         t.id as `Treino`,
@@ -155,6 +164,47 @@ df_treinosExercicios = pd.read_sql_query('''
     group by t.id
 ''', conn)
 st.dataframe(df_treinosExercicios)
+
+# 3 - Mostrar total de pagamentos e último pagamento por cliente
+st.subheader('Pagamentos por Clientes', divider=True)
+
+df_nomes_clientes = pd.read_sql('''
+	SELECT id, nome FROM clientes_academia
+''', conn)
+
+nomes_clientes_dict = {
+    f"{row['nome']} (ID {row['id']})": row['id']
+    for _, row in df_nomes_clientes.iterrows()
+}
+
+cliente_selecionado = st.selectbox('Selecione um cliente:', options=list(nomes_clientes_dict.keys()))
+
+# Recupera o ID correspondente
+cliente_selecionado_id = nomes_clientes_dict[cliente_selecionado]
+
+# Conta quantos pagamentos esse cliente já fez
+cursor.execute('SELECT COUNT(*) FROM pagamento_clientes WHERE cliente_id = ?', (cliente_selecionado_id,))
+total_pagamentos = cursor.fetchone()[0]
+
+# Busca o último pagamento (valor e data), ordenando pela data
+cursor.execute('''
+    SELECT valor_pago, data_pagamento
+    FROM pagamento_clientes
+    WHERE cliente_id = ?
+    ORDER BY data_pagamento DESC
+    LIMIT 1
+''', (cliente_selecionado_id,))
+ultimo_pagamento = cursor.fetchone()
+
+# Exibe os resultados na tela
+st.write(f'O cliente **{cliente_selecionado}** fez **{total_pagamentos}** pagamentos.')
+
+if ultimo_pagamento:
+    valor, data = ultimo_pagamento
+    st.write(f'Seu último pagamento foi de **R$ {valor:.2f}**, em **{data}**.')
+else:
+    st.write('Ainda não há pagamentos registrados para este cliente.')
+
 
 # Formulário de cadastro de novos treinos
 st.subheader("Formulário de cadastro de novos treinos")
