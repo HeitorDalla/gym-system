@@ -116,3 +116,5 @@ df_exercicios.to_sql('treinos', conn, if_exists='append', index=False)
 
 df_exercicios = pd.read_csv('treino_exercicios.csv')
 df_exercicios.to_sql('treino_exercicios', conn, if_exists='append', index=False)
+
+    
