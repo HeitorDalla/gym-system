@@ -3,7 +3,6 @@ import pandas as pd
 from datetime import datetime
 
 def form_cadastro_cliente(conn, cursor):
-    """Formulário para cadastro de cliente"""
     st.write('Cliente')
 
     menu_planos = pd.read_sql_query("SELECT * FROM planos ORDER BY id ASC", conn)
@@ -38,7 +37,6 @@ def form_cadastro_cliente(conn, cursor):
             st.error(f'Favor preencher todos os campos!')
 
 def form_cadastro_pagamento(conn, cursor):
-    """Formulário para cadastro de pagamento"""
     st.write('Pagamento')
 
     menu_cliente = pd.read_sql_query("SELECT * FROM clientes_academia ORDER BY nome ASC", conn)
@@ -69,7 +67,6 @@ def form_cadastro_pagamento(conn, cursor):
                 st.error(f"Favor selecionar um cliente.")
 
 def form_cadastro_treino(conn, cursor):
-    """Formulário para cadastro de treino"""
     st.write('Treino')
 
     df_clientes = pd.read_sql_query("select * from clientes_academia order by nome", conn)
@@ -99,9 +96,10 @@ def form_cadastro_treino(conn, cursor):
 
                 conn.commit()
                 st.success("Treino cadastrado com sucesso!")
+            else:
+                st.error(f'Favor preencher todos os campos!')
 
 def form_cadastro_exercicio_treino(conn, cursor):
-    """Formulário para cadastro de exercícios por treino"""
     st.write('Exercicios por Treino')
 
     menu_treino = pd.read_sql_query("SELECT * FROM treinos", conn)
@@ -116,14 +114,17 @@ def form_cadastro_exercicio_treino(conn, cursor):
         cadastrar_exercicio = st.form_submit_button("Cadastrar")
 
         if cadastrar_exercicio:
-            treino_id = int(menu_treino[menu_treino["id"] == numero_treino]["id"].values[0])
-            id_exercicio = int(menu_exercicio[menu_exercicio["nome"] == nome_exercicio]["id"].values[0])
+            if numero_treino and nome_exercicio and qtd_serie and qtd_repeticoes:
+                treino_id = int(menu_treino[menu_treino["id"] == numero_treino]["id"].values[0])
+                id_exercicio = int(menu_exercicio[menu_exercicio["nome"] == nome_exercicio]["id"].values[0])
 
-            cursor.execute('''
-                INSERT INTO treino_exercicios
-                (treino_id, exercicio_id, series, repeticoes) 
-                VALUES(?, ?, ?, ?)
-            ''', (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
-            
-            conn.commit()
-            st.success(f"Exercicio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
+                cursor.execute('''
+                    INSERT INTO treino_exercicios
+                    (treino_id, exercicio_id, series, repeticoes) 
+                    VALUES(?, ?, ?, ?)
+                ''', (treino_id, id_exercicio, qtd_serie,qtd_repeticoes))
+                
+                conn.commit()
+                st.success(f"Exercicio {nome_exercicio} cadastrado com sucesso para o treino {treino_id}!")
+            else:
+                st.error(f'Favor preencher todos os campos!')
