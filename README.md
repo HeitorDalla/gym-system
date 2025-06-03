@@ -1,6 +1,6 @@
 <h1>Sistema de Academia</h1>
 
-<p>Esse projeto foi desenvolvido em <code>Python</code> usando <code>Pandas</code>, <code>SQLite</code> e <code>Streamlit</code> fim praticar os ensinamentos aprendidos ao decorrer da capacitação em Analytics.</p>
+<p align="justify">A principal porposta foi transformar informações que normalmente ficam em planilhas ou papéis (dados de clientes/alunos, treinos, pagamentos, etc.) em uma aplicação funcional, fácil de usar e que centralize tudo em um só lugar. O projeto possui por finalidade praticar os ensinamentos aprendidos ao decorrer da capacitação em Analytics.</p>
 
 <hr>
 
@@ -41,7 +41,7 @@ GYM-SYSTEM/
 
 </pre>
 
-<p>Outros arquivos e pastas foram omitidos por não serem essenciais para o entendimento da estrutura do projeto.</p>
+<p align="justify">Outros arquivos e pastas foram omitidos por não serem essenciais para o entendimento da estrutura do projeto.</p>
 
 <hr>
 
@@ -49,17 +49,6 @@ GYM-SYSTEM/
 
 <h3 id="login-logout">Login e Logout de Usuários</h3>
 <img src="./img/demonstracao_login_e_logout.gif" alt="Demonstração das funcionalidades de login e logout de usuários" />
-<ol>
-  <li><strong>Listagem dos Clientes e seus Planos</strong>: exibe um DataFrame por <code>Clientes</code> e seus <code>Planos</code>.</li>
-  <li><strong>Listagem dos Treinos e seus Exercícios</strong>: exibe um DataFrame por <code>Treino</code> e seus <code>Exercícios</code>.</li>
-  <li><strong>Listagem dos Pagamentos por Cliente</strong>: exibe a quantidade de pagamentos realizados por clientes e seu último pagamento.</li>
-  <li><strong>Listagem dos Clientes por Instrutor</strong>: exibe um DataFrame que relaciona quantos clientes cada instrutor possui.</li>
-</ol>
-
-<br>
-
-<h3>Exibir DataFrame Filtrado</h3>
-<img src="./img/demonstracao_filtros.gif" alt="Demonstração dos DataFrames filtrados" />
 <ul>
   <li>O sistema exibe uma interface que apresenta dois campos obrigatórios: <code>E-mail</code> e <code>Senha</code> (com ícone para mostrar/ocultar senha).</li>
   <li>O botão <code>Entrar</code> verifica as credenciais antes de liberar acesso.</li>
@@ -67,7 +56,16 @@ GYM-SYSTEM/
   <li>Botão <code>Sair</code> permite fazer <code>Logout</code>, encerrando a sessão.</li>
 </ul>
 
+<br>
 
+<h3>Exibir DataFrame Filtrado</h3>
+<img src="./img/demonstracao_filtros.gif" alt="Demonstração dos DataFrames filtrados" />
+<ol>
+  <li><strong>Listagem dos Clientes e seus Planos</strong>: exibe um DataFrame por <code>Clientes</code> e seus <code>Planos</code>.</li>
+  <li><strong>Listagem dos Treinos e seus Exercícios</strong>: exibe um DataFrame por <code>Treino</code> e seus <code>Exercícios</code>.</li>
+  <li><strong>Listagem dos Pagamentos por Cliente</strong>: exibe a quantidade de pagamentos realizados por clientes e seu último pagamento.</li>
+  <li><strong>Listagem dos Clientes por Instrutor</strong>: exibe um DataFrame que relaciona quantos clientes cada instrutor possui.</li>
+</ol>
 
 <br>
 
@@ -165,12 +163,12 @@ cd seu-repositorio</code></pre>
 
 <h2>⚠️ Importante</h2>
 
-<p>Todos os dados utilizados neste projeto são estritamente fictícios/simulados e não se baseiam em informações reais ou sensíveis. Não há nenhum conteúdo restrito ou confidencial, tampouco dados ofensivos que possam ferir a privacidade, integridade ou reputação de indivíduos ou organizações. Dessa forma, assegura-se que tais dados não representem qualquer perigo ou risco, seja à segurança física ou digital de qualquer pessoa.</p>
+<p align="justify">Todos os dados utilizados neste projeto são estritamente fictícios/simulados e não se baseiam em informações reais ou sensíveis. Não há nenhum conteúdo restrito ou confidencial, tampouco dados ofensivos que possam ferir a privacidade, integridade ou reputação de indivíduos ou organizações. Dessa forma, assegura-se que tais dados não representem qualquer perigo ou risco, seja à segurança física ou digital de qualquer pessoa.</p>
 
 <hr>
 
 <h2>Contribuições</h2>
-<p>Este projeto está aberto para contribuições via issues. Se você encontrou um bug, deseja sugerir uma melhoria ou tem dúvidas sobre o funcionamento, siga as instruções abaixo:</p>
+<p align="justify">Este projeto está aberto para contribuições via issues. Se você encontrou um bug, deseja sugerir uma melhoria ou tem dúvidas sobre o funcionamento, siga as instruções abaixo:</p>
 <ol>
     <li>Verifique se já existe uma issue sobre o assunto. Caso sim, adicione um comentário nela.</li>
     <li>Se não houver, abra uma nova issue com uma descrição clara e objetiva.</li>
@@ -179,4 +177,4 @@ cd seu-repositorio</code></pre>
 <hr>
 
 <h2>Licença e Autor</h2>
-<p>Este projeto foi desenvolvido por <a href="https://github.com/HeitorDalla">Heitor Giussani Dalla Villa</a>, <a href="https://github.com/MatheusVenturaNellessen">Matheus Ventura Nellessen</a> e <a href="https://github.com/WillZanutto">Willian Zanutto</a>, e está licenciado sob a licença MIT. Veja o <a href="./LICENSE">documento</a> para mais detalhes.</p>
+<p align="justify">Este projeto foi desenvolvido por <a href="https://github.com/HeitorDalla">Heitor Giussani Dalla Villa</a>, <a href="https://github.com/MatheusVenturaNellessen">Matheus Ventura Nellessen</a> e <a href="https://github.com/WillZanutto">Willian Zanutto</a>, e está licenciado sob a licença MIT. Veja o <a href="./LICENSE">documento</a> para mais detalhes.</p>
