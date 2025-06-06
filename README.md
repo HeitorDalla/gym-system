@@ -1,6 +1,6 @@
 <h1>Sistema de Academia</h1>
 
-<p align="justify">A principal porposta foi transformar informações que normalmente ficam em planilhas ou papéis (dados de clientes/alunos, treinos, pagamentos, etc.) em uma aplicação funcional, fácil de usar e que centralize tudo em um só lugar. O projeto possui por finalidade praticar os ensinamentos aprendidos ao decorrer da capacitação em Analytics.</p>
+<p align="justify">A principal proposta foi transformar informações que normalmente ficam em planilhas ou papéis (dados de clientes/alunos, treinos, pagamentos, etc.) em uma aplicação funcional, fácil de usar e que centralize tudo em um só lugar. O projeto possui por finalidade praticar os ensinamentos aprendidos ao decorrer da capacitação em Analytics.</p>
 
 <hr>
 
